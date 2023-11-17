@@ -3,11 +3,11 @@ import { Avatar } from './Avatar';
 import { useState } from 'react';
 import styles from './Comment.module.css';
 
-export function Comment({content, onDeleteComment}) {
+export function Comment({id, content, onDeleteComment}) {
     const [likeCount, setLikeCount] = useState(0);
 
     function handleDeleteComment () {
-        onDeleteComment(content)
+        onDeleteComment(id)
     }
 
     function handleLikeComment() {

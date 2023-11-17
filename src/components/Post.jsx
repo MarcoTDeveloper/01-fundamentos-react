@@ -1,6 +1,7 @@
 import { format, formatDistanceToNow } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Comment } from './Comment';
 import { Avatar } from './Avatar';
@@ -9,9 +10,10 @@ import styles from './Post.module.css';
 
 export function Post({ author, publishedAt, content }) {
 
-    const [comments, setComments] = useState([
-        'Post muito bacana, hein?!'
-    ])
+    const [comments, setComments] = useState([{
+        id: uuidv4(),
+        content: 'Post muito bacana, hein?!'
+    }])
     const [newCommentText, setNewCommentText] = useState('')
 
     const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
@@ -26,7 +28,10 @@ export function Post({ author, publishedAt, content }) {
     function handleCreateNewComment() {
         event.preventDefault()
 
-        setComments([...comments, newCommentText]);
+        setComments([...comments, {
+            id: uuidv4(),
+            content: newCommentText
+        }]);
         setNewCommentText('');
     }
 
@@ -39,9 +44,9 @@ export function Post({ author, publishedAt, content }) {
         event.target.setCustomValidity('Esse campo é obrigatório!')
     }
 
-    function deleteComment(commentToDelete) {
+    function deleteComment(idToDelete) {
         const commentsWithoutDeleteOne = comments.filter(comment => {
-            return comment !== commentToDelete;
+            return comment.id !== idToDelete;
         })
         setComments(commentsWithoutDeleteOne);
     }
@@ -94,11 +99,12 @@ export function Post({ author, publishedAt, content }) {
             </form>
 
             <div className={styles.commentList}>
-               {comments.map(comment => {
+               {comments.map(({ id, content }) => {
                 return (
                     <Comment 
-                        key={comment} 
-                        content={comment} 
+                        key={id} 
+                        id={id}
+                        content={content} 
                         onDeleteComment={deleteComment}
                     />
                 )
